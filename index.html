@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        body {
+            background-color: black;
+            color: pink;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* Styling Gambar GIF */
+        .gif-container img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        /* Teks Berkedip */
+        .blinking-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: pink;
+        }
+
+        /* Styling Canvas Hati (Turtle pengganti) */
+        canvas#heartCanvas {
+            background-color: black;
+            margin-top: 10px;
+        }
+
+        /* Tombol Musik */
+        .music-btn {
+            background-color: pink;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            transition: background 0.3s;
+        }
+
+        .music-btn:hover {
+            background-color: lightpink;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Musik latar (Ganti '2.mp3' sesuai nama file audio Anda) -->
+        <audio id="bgMusic" src="2.mp3" loop></audio>
+        <button class="music-btn" onclick="toggleMusic()">🎵 Play / Pause Music</button>
+
+        <!-- Tempat Gambar GIF (Ganti '1.gif' sesuai nama file GIF Anda) -->
+        <div class="gif-container">
+            <img src="1.gif" alt="Happy Birthday GIF">
+        </div>
+
+        <!-- Teks dengan efek titik berkedip -->
+        <div class="blinking-text" id="loveText">I love you in every universe.</div>
+
+        <!-- Canvas untuk menggambar animasi Hati (Turtle) -->
+        <canvas id="heartCanvas" width="600" height="500"></canvas>
+    </div>
+
+    <script>
+        // --- 1. Kontrol Musik ---
+        const audio = document.getElementById('bgMusic');
+        audio.volume = 0.5;
+
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        // --- 2. Animasi Titik Berkedip ---
+        const textElement = document.getElementById('loveText');
+        setInterval(() => {
+            if (textElement.innerText.endsWith('.')) {
+                textElement.innerText = "I love you in every universe";
+            } else {
+                textElement.innerText = "I love you in every universe.";
+            }
+        }, 500);
+
+        // --- 3. Menggambar Hati (Konversi dari Turtle ke HTML5 Canvas) ---
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function heartX(k) {
+            return 15 * Math.pow(Math.sin(k), 3);
+        }
+
+        function heartY(k) {
+            return 12 * Math.cos(k) - 5 * Math.cos(2 * k) - 2 * Math.cos(3 * k) - Math.cos(4 * k);
+        }
+
+        // Geser koordinat ke tengah canvas
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const scale = 12; // Skala disesuaikan agar pas di canvas
+
+        ctx.strokeStyle = 'pink';
+        ctx.fillStyle = 'pink';
+        ctx.lineWidth = 1;
+
+        let i = 0;
+        const maxPoints = 6000;
+
+        function drawHeart() {
+            // Gambar beberapa titik per frame agar animasi berjalan lancar dan cepat
+            for (let step = 0; step < 20; step++) {
+                if (i >= maxPoints) return;
+
+                const x = centerX + heartX(i) * scale;
+                const y = centerY - heartY(i) * scale; // Sumbu Y dibalik di Canvas HTML
+
+                ctx.beginPath();
+                ctx.arc(x, y, 1, 0, 2 * Math.PI);
+                ctx.stroke();
+
+                i++;
+            }
+            requestAnimationFrame(drawHeart);
+        }
+
+        // Jalankan gambar hati
+        drawHeart();
+    </script>
+</body>
+</html>
